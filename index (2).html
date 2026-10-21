@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>逃出鬼屋：萬聖節數學闖關</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4ecdc;--panel:#fffaf0;--ink:#2a1636;--mute:#6d5a78;--line:#d9c9b0;--pump:#d9600f;--pump-ink:#fff;--ok:#2f7d32;--bad:#b3261e;--door:#3b2150;--door-ink:#f4ecdc;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1a0f24;--panel:#271638;--ink:#f1e7d6;--mute:#b9a6c6;--line:#4a2f60;--pump:#ff8a2b;--pump-ink:#1a0f24;--ok:#8fd14f;--bad:#ff8a80;--door:#0f0818;--door-ink:#f1e7d6}}
+:root[data-theme="dark"]{--bg:#1a0f24;--panel:#271638;--ink:#f1e7d6;--mute:#b9a6c6;--line:#4a2f60;--pump:#ff8a2b;--pump-ink:#1a0f24;--ok:#8fd14f;--bad:#ff8a80;--door:#0f0818;--door-ink:#f1e7d6}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.7 "Noto Sans TC",system-ui,sans-serif}
+main{max-width:1040px;margin:0 auto;padding:28px 18px 64px}
+h1,h2,h3{font-family:"Noto Serif TC",serif;line-height:1.3;margin:0}
+h1{font-size:clamp(2.2rem,8vw,3.6rem);font-weight:900;letter-spacing:.02em}
+h2{font-size:1.5rem}
+.lede{color:var(--mute);margin:12px 0 24px;max-width:34em}
+.story{border-left:5px solid var(--pump);padding:4px 0 4px 16px;margin:0 0 28px}
+.tiers{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin:0 0 8px}
+.tier{font:inherit;text-align:left;background:var(--panel);color:var(--ink);border:2px solid var(--line);border-radius:14px;padding:14px 16px;cursor:pointer}
+.tier b{display:block;font-family:"Noto Serif TC",serif;font-size:1.1rem}
+.tier span{color:var(--mute);font-size:.9rem}
+.tier[aria-pressed="true"]{border-color:var(--pump);box-shadow:0 0 0 3px color-mix(in srgb,var(--pump) 30%,transparent)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--pump);outline-offset:2px}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:28px 0 14px;flex-wrap:wrap}
+.lamps{display:flex;gap:8px;font-size:1.6rem}
+.lamp{filter:grayscale(1) opacity(.35);transition:filter .4s}
+.lamp.on{filter:none}
+.score{font-weight:700}
+.card{background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:18px;margin:0 0 16px}
+.card.done{border-color:var(--ok)}
+.card h3{font-size:1.2rem;margin-bottom:2px}
+.tag{color:var(--mute);font-size:.88rem;margin:0 0 10px}
+.body{font-size:1.05rem}
+.body pre{margin:10px 0;padding:12px 14px;background:color-mix(in srgb,var(--pump) 10%,var(--panel));border-radius:10px;font:500 1.12rem/1.9 "Noto Sans TC",monospace;white-space:pre-wrap;overflow-x:auto}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
+input[type=number]{font:inherit;width:8.5em;padding:9px 12px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
+.btn{font:700 1rem "Noto Sans TC",sans-serif;padding:9px 18px;border-radius:10px;border:2px solid var(--pump);background:var(--pump);color:var(--pump-ink);cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn:disabled{opacity:.5;cursor:default}
+.msg{min-height:1.6em;margin-top:8px;font-weight:500}
+.msg.ok{color:var(--ok)}.msg.bad{color:var(--bad)}
+.hint{margin-top:8px;padding:10px 12px;border-radius:10px;background:var(--bg);border:1px dashed var(--line);color:var(--mute)}
+.door{margin-top:36px;background:var(--door);color:var(--door-ink);border-radius:20px 20px 10px 10px;padding:28px 20px;text-align:center;border:4px solid var(--pump)}
+.door h2{margin-bottom:6px}
+.door p{margin:6px auto 16px;max-width:30em;opacity:.9}
+.door input{background:#fff;color:#2a1636;border-color:#fff;text-align:center;font-size:1.6rem;width:6em;letter-spacing:.2em}
+.door .msg.ok{color:#8fd14f}.door .msg.bad{color:#ff8a80}
+.win{font-size:3rem}
+.tools{display:flex;justify-content:flex-end;gap:8px;margin:0 0 6px}
+.tools button{font-size:.85rem;padding:4px 10px}
+@media print{.tools,.hint,button{display:none}}
+.timer{font:700 1.4rem "Noto Serif TC",serif;font-variant-numeric:tabular-nums}
+.big{font-size:1.2rem;padding:14px 28px;margin-top:6px}
+[hidden]{display:none!important}
+select{font:inherit;padding:9px 10px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink);max-width:100%}
+.lb{display:flex;gap:12px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line)}
+.lb .rk{width:2em;font-size:1.3rem;text-align:center}.lb .nm{flex:1;font-weight:700}.lb .sc{font-variant-numeric:tabular-nums;color:var(--mute)}
+.word{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
+.wt{margin:0 0 6px}
+.slots,.tiles{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.slots{min-height:52px;padding:6px;border-radius:10px;background:var(--bg);border:2px dashed var(--line)}
+.tile{font:700 1.3rem "Noto Sans TC",sans-serif;width:2.4rem;height:2.6rem;border-radius:8px;border:2px solid var(--pump);background:var(--panel);color:var(--ink);cursor:pointer;padding:0}
+.tile.on{background:var(--pump);color:var(--pump-ink)}
+.tile:disabled{opacity:.35;cursor:default}
+.eqs{margin:10px 0;padding:8px 12px;background:color-mix(in srgb,var(--pump) 10%,var(--panel));border-radius:10px}
+.eq{display:flex;align-items:center;justify-content:space-between;gap:10px;font:500 1.12rem/1.9 "Noto Sans TC",sans-serif}
+.spk{font-size:1rem;border:2px solid var(--line);background:var(--panel);border-radius:8px;padding:2px 8px;cursor:pointer}
+.spkall{font-size:.9rem;padding:4px 12px;margin-bottom:4px}
+.em{font:inherit;background:none;border:0;padding:0 1px;margin:0;cursor:pointer;border-radius:6px;color:inherit}
+.em:hover{background:color-mix(in srgb,var(--pump) 25%,transparent)}
+.fun{margin-top:12px;padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--ok) 14%,var(--panel));border:1px solid var(--ok)}
+.fun .en{font-weight:700}.fun .zh{color:var(--mute);margin:2px 0 8px}
+.qcard{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px}
+.pad{align-self:start;position:sticky;top:12px}
+.padbar{display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap;font-weight:700;margin-bottom:6px}
+.pb{font:500 .85rem "Noto Sans TC",sans-serif;padding:3px 9px;border-radius:8px;border:2px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+.pb.on{border-color:var(--pump);background:color-mix(in srgb,var(--pump) 20%,var(--panel))}
+.sheet{height:280px;border:2px solid var(--line);border-radius:10px;background-color:var(--bg);background-image:linear-gradient(var(--line) 1px,transparent 1px);background-size:100% 28px;overflow:hidden}
+.sheet canvas{width:100%;height:100%;display:block;touch-action:none;cursor:crosshair}
+@media (max-width:800px){.qcard{grid-template-columns:1fr}.pad{position:static}.sheet{height:220px}}
+.door .btn.ghost{color:var(--door-ink);border-color:rgba(255,255,255,.45)}
+.door .tag{color:var(--door-ink);opacity:.85}
+.door .word{border-top:1px dashed rgba(255,255,255,.35);text-align:left}
+.door .slots,.door .tiles{justify-content:center}
+.door .row{justify-content:center}
+</style>
+</head>
+<body>
+<main>
+<div class="tools"><button class="btn ghost" id="theme" type="button">切換明暗</button><button class="btn ghost" id="reset" type="button">重新開始</button></div>
+<h1>逃出鬼屋</h1>
+<p class="lede">萬聖節數學闖關｜四年級・時間單元</p>
+<div class="story"><p style="margin:0">巫婆把大家關進了鬼屋。每次闖關的題目都是隨機抽出的。每一關先算出魔法數字，再拼出它的英文單字，最後把五個數字加起來，就是大門的密碼，輸入後還要拼出它的英文單字。</p></div>
+
+<div class="bar">
+  <div class="timer" id="timer">⏱️ 00:00</div>
+  <div class="lamps" id="lamps" aria-label="闖關進度"></div>
+  <div class="score" id="score"></div>
+</div>
+<button class="btn big" id="start" type="button">開始闖關</button>
+<div id="stations"></div>
+
+<section class="door" id="door" hidden>
+  <div class="win" id="doorIcon">🚪</div>
+  <h2 id="doorTitle">鬼屋大門</h2>
+  <p id="doorText">把五關的數字答案相加，輸入密碼，最後還要拼出總和的英文單字。</p>
+  <div class="row" style="justify-content:center">
+    <input type="number" id="code" inputmode="numeric" aria-label="大門密碼">
+    <button class="btn" id="open" type="button">開門</button>
+  </div>
+  <div class="msg" id="doorMsg" role="status"></div>
+  <div id="finalSpell"></div>
+</section>
+<section class="card" id="submit" hidden style="margin-top:20px">
+  <h3>登錄成績</h3>
+  <p class="tag">選好班級、座號和一個萬聖節圖案，成績就會出現在排行榜。</p>
+  <div class="row"><select id="cls" aria-label="班級"></select><select id="seat" aria-label="座號"></select><select id="emo" aria-label="萬聖節圖案"></select><button class="btn" id="send" type="button">送出成績</button></div>
+  <div class="msg" id="subMsg" role="status"></div>
+</section>
+<section style="margin-top:32px"><h2 id="boardTitle">排行榜</h2><p class="tag">先比分數，分數相同比用時，只列出前 10 名。</p><div id="rows"></div></section>
+</main>
+<script>
+var POOL=[
+[{id:"A1",t:"南瓜蝙蝠",h:"先算南瓜。",a:13,b:"每個圖案代表幾分鐘？<pre>🎃 + 🎃 = 10\n🎃 + 🦇 = 8\n🦇 + 🦇 + 👻 = 11\n🎃 + 🦇 + 👻 = ？</pre>"},
+{id:"A2",t:"蜘蛛糖果",h:"先算蜘蛛，再一個一個往下找。",a:12,b:"每個圖案代表幾分鐘？<pre>🕷️ + 🕷️ + 🕷️ = 15\n🕷️ + 🐱 = 9\n🐱 + 🐱 + 🍬 = 11\n🕷️ + 🐱 + 🍬 = ？</pre>"},
+{id:"A3",t:"幽靈月亮",h:"先算幽靈，再找巫師和月亮。",a:15,b:"每個圖案代表幾分鐘？<pre>👻 + 👻 = 14\n👻 + 🧙 = 12\n🧙 + 🌙 = 8\n👻 + 🧙 + 🌙 = ？</pre>"}],
+[{id:"B1",t:"南瓜乘法",h:"先算南瓜，再算蝙蝠。最後的算式要先乘後加。",a:14,b:"每個圖案代表幾分鐘？<pre>🎃 × 3 = 12\n🎃 + 🦇 = 9\n🎃 + 🦇 × 2 = ？</pre>"},
+{id:"B2",t:"蜘蛛乘法",h:"先算蜘蛛，再算黑貓。最後的算式要先乘後加。",a:13,b:"每個圖案代表幾分鐘？<pre>🕷️ × 2 = 10\n🕷️ + 🐱 = 8\n🕷️ × 2 + 🐱 = ？</pre>"},
+{id:"B3",t:"幽靈乘法",h:"先算幽靈，再算巫師。最後的算式要先乘後減。",a:1,b:"每個圖案代表幾分鐘？<pre>👻 × 4 = 12\n👻 + 🧙 = 10\n🧙 − 👻 × 2 = ？</pre>"}],
+[{id:"C1",t:"蝙蝠除法",h:"先算蝙蝠，再算黑貓。",a:5,b:"每個圖案代表幾分鐘？<pre>🦇 ÷ 2 = 4\n🦇 + 🐱 = 11\n🦇 ÷ 4 + 🐱 = ？</pre>"},
+{id:"C2",t:"糖果除法",h:"先算糖果，再算月亮。",a:6,b:"每個圖案代表幾分鐘？<pre>🍬 ÷ 3 = 5\n🍬 − 🌙 = 9\n🌙 ÷ 2 + 🍬 ÷ 5 = ？</pre>"},
+{id:"C3",t:"貓頭鷹除法",h:"先算南瓜，再算貓頭鷹。",a:14,b:"每個圖案代表幾分鐘？<pre>🎃 × 5 = 20\n🎃 + 🦉 = 12\n🦉 ÷ 4 + 🎃 × 3 = ？</pre>"}],
+[{id:"D1",t:"巫師加倍",h:"先算蝙蝠，再算巫師。",a:9,b:"每個圖案代表幾分鐘？<pre>🦇 + 🦇 = 14\n🧙 = 🦇 × 2\n🧙 ÷ 7 + 🦇 = ？</pre>"},
+{id:"D2",t:"貓頭鷹加八",h:"先算南瓜，再算貓頭鷹。",a:8,b:"每個圖案代表幾分鐘？<pre>🎃 × 3 = 12\n🦉 = 🎃 + 8\n🦉 ÷ 3 + 🎃 = ？</pre>"},
+{id:"D3",t:"殭屍減三",h:"先算殭屍，再算蜘蛛。",a:3,b:"每個圖案代表幾分鐘？<pre>🧟 − 3 = 9\n🧟 ÷ 4 = 🕷️\n🧟 − 🕷️ × 3 = ？</pre>"}]
+];
+var BON=[
+{id:"X1",t:"最終關：黑貓三兄弟",h:"先算一隻黑貓，再算除法。",a:5,b:"每個圖案代表幾分鐘？<pre>🐱 + 🐱 + 🐱 = 18\n🐱 ÷ 3 + 🐱 ÷ 2 = ？</pre>"},
+{id:"X2",t:"最終關：幽靈與蜘蛛",h:"先算幽靈，再算蜘蛛。",a:7,b:"每個圖案代表幾分鐘？<pre>👻 × 5 = 15\n👻 + 🕷️ = 13\n🕷️ ÷ 2 + 👻 − 1 = ？</pre>"},
+{id:"X3",t:"最終關：糖果與巫師",h:"先算糖果，再算巫師。",a:8,b:"每個圖案代表幾分鐘？<pre>🍬 ÷ 2 = 6\n🍬 − 🧙 = 7\n🍬 ÷ 4 + 🧙 = ？</pre>"}];
+var WORDS={1:"one",2:"two",3:"three",4:"four",5:"five",6:"six",7:"seven",8:"eight",9:"nine",10:"ten",11:"eleven",12:"twelve",13:"thirteen",14:"fourteen",15:"fifteen",16:"sixteen"};
+var EMO=["🎃 南瓜","👻 幽靈","🦇 蝙蝠","🕷️ 蜘蛛","🧙 巫師","🧛 吸血鬼","🧟 殭屍","🐱 黑貓","💀 骷髏","🕸️ 蜘蛛網","🍬 糖果","🌙 月亮"];
+var run=null,bonus=null,code=0,codeOk=false,finalPts=0,st={},t0=0,tick=null,secs=0,finished=false,board=[],dbRef=null,useDb=false;
+var $=function(i){return document.getElementById(i)};
+function fmt(s){return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+function rnd(a){return a[Math.floor(Math.random()*a.length)]}
+function lastIds(){try{return JSON.parse(localStorage.getItem("hmlast")||"[]")}catch(e){return[]}}
+function newRun(){
+  var last=lastIds(),ids=[];
+  var items=POOL.map(function(cat){var f=cat.filter(function(x){return last.indexOf(x.id)<0});return rnd(f.length?f:cat)});
+  var bf=BON.filter(function(x){return last.indexOf(x.id)<0});bonus=rnd(bf.length?bf:BON);
+  for(var i=items.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=items[i];items[i]=items[j];items[j]=x}
+  items.push(bonus);items.forEach(function(x){ids.push(x.id)});
+  try{localStorage.setItem("hmlast",JSON.stringify(ids))}catch(e){}
+  code=items.reduce(function(n,x){return n+x.a},0);
+  return items;
+}
+function reset(){
+  run=null;st={};codeOk=false;finalPts=0;$("code").disabled=false;$("open").disabled=false;$("finalSpell").textContent="";finished=false;clearInterval(tick);secs=0;
+  $("stations").innerHTML="";$("door").hidden=true;$("submit").hidden=true;$("start").hidden=false;$("send").disabled=false;msg("subMsg","","");
+  $("timer").textContent="⏱️ 00:00";$("lamps").innerHTML="";$("score").textContent="準備好就按「開始闖關」，計時馬上開始。";
+  $("code").value="";msg("doorMsg","","");$("doorIcon").textContent="🚪";$("doorText").textContent="把五關的數字答案相加，輸入密碼，最後還要拼出總和的英文單字。";
+  drawBoard();
+}
+$("start").onclick=function(){
+  $("start").hidden=true;run=newRun();$("door").hidden=false;render();
+  t0=Date.now();secs=0;
+  tick=setInterval(function(){secs=Math.floor((Date.now()-t0)/1000);$("timer").textContent="⏱️ "+fmt(secs)},500);
+};
+function card(it,k,isB){
+  return '<article class="card qcard" id="c'+k+'"><div class="qcol"><h3>第 '+(k+1)+' 關　'+it.t+'</h3><p class="tag">答對數字 3 分（用提示 2 分），拼對單字再加 1 分</p><div class="body">'+it.b+'</div>'+
+  '<div class="row"><input type="number" inputmode="numeric" aria-label="答案"><button class="btn" type="button" data-act="chk" data-k="'+k+'">檢查答案</button><button class="btn ghost" type="button" data-act="hint" data-k="'+k+'">巫婆的錦囊</button></div><div class="msg" role="status"></div></div><aside class="pad"></aside></article>';
+}
+function render(){
+  var h="";run.forEach(function(it,i){st[i]={};h+=card(it,i,false)});
+  $("stations").innerHTML=h;
+  $("stations").querySelectorAll("button").forEach(function(b){b.onclick=function(){act(b)}});
+  $("stations").querySelectorAll("input").forEach(function(inp){inp.onkeydown=function(e){if(e.key==="Enter")inp.closest(".card").querySelector('[data-act="chk"]').click()}});
+  eqVoice();$("stations").querySelectorAll(".pad").forEach(initPad);prog();
+}
+function act(b){
+  if(finished)return;
+  var k=b.dataset.k,it=run[+k],s=st[+k],c=$("c"+k),m=c.querySelector(".msg");
+  if(b.dataset.act==="hint"){s.hint=true;if(!c.querySelector(".hint")){var d=document.createElement("div");d.className="hint";d.textContent="💡 "+it.h;c.querySelector(".qcol").appendChild(d)}return}
+  var v=c.querySelector("input").value;
+  if(v===""){m.className="msg bad";m.textContent="請先輸入答案。";return}
+  if(+v===it.a){
+    s.np=s.hint?2:3;
+    m.className="msg ok";m.textContent="數字答對了！再拼出英文單字，才算過關。";
+    c.querySelector("input").disabled=true;b.disabled=true;
+    wordStage(c,it,s);
+  }else{m.className="msg bad";m.textContent="不是這個答案，再想想。可以打開巫婆的錦囊。"}
+}
+var EN={"🎃":"pumpkin","🦇":"bat","👻":"ghost","🕷":"spider","🍬":"candy","🐱":"cat","🧙":"wizard","🌙":"moon","🏚":"haunted house","🦉":"owl","🐈":"kitten","🧛":"vampire","🧟":"zombie"};
+var ON=["zero","one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen"],TN=["","","twenty","thirty","forty","fifty","sixty","seventy","eighty","ninety"];
+function nw(n){n=+n;if(n<20)return ON[n];var o=n%10;return TN[Math.floor(n/10)]+(o?"-"+ON[o]:"")}
+function tk(x){return x==="？"||x==="?"?"what":nw(x)}
+function eqSpeech(line){
+  var t=line.replace(/\uFE0F/g,"").trim(),m;
+  if((m=t.match(/^放入\s*(\S+)\s*→\s*變成\s*(\S+)$/)))return "put in "+tk(m[1])+", it becomes "+tk(m[2]);
+  if((m=t.match(/^(\S+)\s*是\s*(\S+)\s*的\s*(\d+)\s*倍$/)))return "one "+EN[m[1]]+" is "+nw(m[3])+" times one "+EN[m[2]];
+  var extra=t.indexOf("不是 0")>-1?". The bat is not zero":"";
+  t=t.replace(/（[^）]*）/g,"").replace("三數相加","the sum of the three numbers").replace("三數相乘","the product of the three numbers");
+  if(t.indexOf("、")>-1)t=t.replace(/[？?]/,"what comes next");
+  Object.keys(EN).forEach(function(k){t=t.split(k).join(" one "+EN[k]+" ")});
+  t=t.replace(/、/g,", ").replace(/[？?]/g," what ").replace(/[−-]/g," minus ").replace(/×/g," times ").replace(/÷/g," divided by ").replace(/\+/g," plus ").replace(/=/g," equals ").replace(/\d+/g,function(d){return " "+nw(d)+" "});
+  return t.replace(/\s+/g," ").replace(/\s+,/g,",").trim()+extra;
+}
+function eqVoice(){
+  $("stations").querySelectorAll(".body pre").forEach(function(pr){
+    var lines=pr.textContent.split("\n").filter(function(l){return l.trim()}),box=document.createElement("div");box.className="eqs";
+    if(window.speechSynthesis){var all=document.createElement("button");all.type="button";all.className="btn ghost spkall";all.textContent="🔊 全部念一遍";all.onclick=function(){say(lines.map(eqSpeech).join(". "))};box.appendChild(all);var tip=document.createElement("span");tip.className="tag";tip.style.marginLeft="8px";tip.textContent="點圖案可以聽英文單字";box.appendChild(tip)}
+    lines.forEach(function(l){
+      var r=document.createElement("div");r.className="eq";var sp=document.createElement("span");
+      l.split(/(🎃|🦇|👻|🕷\uFE0F?|🍬|🐱|🧙|🌙|🏚\uFE0F?|🦉|🐈|🧛|🧟)/).forEach(function(pc){
+        if(!pc)return;var key=pc.replace(/\uFE0F/g,"");
+        if(EN[key]&&window.speechSynthesis){var eb=document.createElement("button");eb.type="button";eb.className="em";eb.textContent=pc;eb.setAttribute("aria-label","聽 "+EN[key]);eb.onclick=function(){say(EN[key])};sp.appendChild(eb)}
+        else sp.appendChild(document.createTextNode(pc));
+      });r.appendChild(sp);
+      if(window.speechSynthesis){var b=document.createElement("button");b.type="button";b.className="spk";b.setAttribute("aria-label","聽這一行的英文");b.textContent="🔊";b.onclick=function(){say(eqSpeech(l))};r.appendChild(b)}
+      box.appendChild(r);
+    });
+    pr.replaceWith(box);
+  });
+}
+var FUN={
+A1:["Thirteen pumpkins are dancing with a friendly bat!","十三顆南瓜正在和一隻友善的蝙蝠一起跳舞！"],
+A2:["Twelve spiders share their candy with a black cat.","十二隻蜘蛛把糖果分給一隻黑貓。"],
+A3:["Fifteen ghosts wave at the wizard under the moon.","十五隻幽靈在月亮下向巫師揮手。"],
+B1:["Fourteen pumpkins are singing a spooky song!","十四顆南瓜正在唱一首毛骨悚然的歌！"],
+B2:["Thirteen spiders are playing hide and seek with a cat.","十三隻蜘蛛正在和一隻貓玩捉迷藏。"],
+B3:["One little ghost is learning magic from a wizard.","一隻小幽靈正在向巫師學魔法。"],
+C1:["Five bats fly over a sleepy cat.","五隻蝙蝠飛過一隻想睡覺的貓。"],
+C2:["Six candies glow like little moons!","六顆糖果像小月亮一樣發光！"],
+C3:["Fourteen pumpkins are watching a wise owl.","十四顆南瓜正在看一隻聰明的貓頭鷹。"],
+D1:["Nine bats are helping the wizard stir the potion.","九隻蝙蝠正在幫巫師攪拌魔藥。"],
+D2:["Eight pumpkins are having a party with an owl.","八顆南瓜正在和一隻貓頭鷹開派對。"],
+D3:["Three zombies are scared of one tiny spider!","三隻殭屍竟然怕一隻小蜘蛛！"],
+X1:["Five cats wear tiny witch hats!","五隻貓戴著小小的巫婆帽！"],
+X2:["Seven ghosts are telling jokes to a spider.","七隻幽靈正在講笑話給一隻蜘蛛聽。"],
+X3:["Eight candies jump into the wizard's bag!","八顆糖果跳進巫師的袋子裡！"]};
+function initPad(el){
+  el.innerHTML='<div class="padbar"><span>✏️ 計算紙</span><span><button type="button" class="pb on" data-m="pen">筆</button> <button type="button" class="pb" data-m="eraser">橡皮擦</button> <button type="button" class="pb" data-m="clear">全部清除</button></span></div><div class="sheet"><canvas aria-label="計算紙，可用手指或觸控筆書寫"></canvas></div>';
+  var cv=el.querySelector("canvas"),sh=el.querySelector(".sheet"),dpr=window.devicePixelRatio||1;
+  var W=Math.max(200,sh.clientWidth),H=Math.max(160,sh.clientHeight);
+  cv.width=W*dpr;cv.height=H*dpr;
+  var x=cv.getContext("2d");x.scale(dpr,dpr);x.lineCap="round";x.lineJoin="round";
+  var mode="pen",on=false,lx=0,ly=0;
+  function pos(e){var r=cv.getBoundingClientRect();return[(e.clientX-r.left)*(W/r.width),(e.clientY-r.top)*(H/r.height)]}
+  function seg(a,b){
+    x.globalCompositeOperation=mode==="pen"?"source-over":"destination-out";
+    x.strokeStyle=(getComputedStyle(document.documentElement).getPropertyValue("--ink")||"#222").trim()||"#222";
+    x.lineWidth=mode==="pen"?3:20;
+    x.beginPath();x.moveTo(a[0],a[1]);x.lineTo(b[0],b[1]);x.stroke();
+  }
+  cv.onpointerdown=function(e){e.preventDefault();on=true;try{cv.setPointerCapture(e.pointerId)}catch(_){}var p=pos(e);lx=p[0];ly=p[1];seg(p,[p[0]+.01,p[1]])};
+  cv.onpointermove=function(e){if(!on)return;e.preventDefault();var p=pos(e);seg([lx,ly],p);lx=p[0];ly=p[1]};
+  cv.onpointerup=cv.onpointercancel=cv.onpointerleave=function(){on=false};
+  el.querySelectorAll(".pb").forEach(function(b){b.onclick=function(){
+    var m=b.dataset.m;
+    if(m==="clear"){x.save();x.setTransform(1,0,0,1,0,0);x.clearRect(0,0,cv.width,cv.height);x.restore();return}
+    mode=m;el.querySelectorAll(".pb").forEach(function(q){q.classList.toggle("on",q.dataset.m===mode)});
+  }});
+}
+function shuf(w){var a=w.split(""),t=0;do{for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=a[i];a[i]=a[j];a[j]=x}t++}while(a.join("")===w&&t<20);return a}
+function say(w){try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(w);u.lang="en-US";u.rate=.8;speechSynthesis.speak(u)}catch(e){}}
+function wordStage(c,it,s){
+  var w=WORDS[it.a],L=shuf(w),seq=[],tries=0;
+  var box=document.createElement("div");box.className="word";
+  box.innerHTML='<p class="wt">數字是 <b>'+it.a+'</b>。聽發音，把字母排成英文單字：</p><div class="row"><button class="btn ghost" type="button" data-s="1">🔊 聽發音</button></div><div class="slots" aria-label="你的拼字"></div><div class="tiles" aria-label="字母"></div><div class="row"><button class="btn ghost" type="button" data-s="2">清除重排</button><button class="btn" type="button" data-s="3">檢查拼字</button></div><div class="msg" role="status"></div>';
+  c.querySelector(".qcol").appendChild(box);
+  var sl=box.querySelector(".slots"),ti=box.querySelector(".tiles"),mm=box.querySelector(".msg");
+  function draw(){
+    sl.textContent="";ti.textContent="";
+    seq.forEach(function(ix){var b=document.createElement("button");b.type="button";b.className="tile on";b.textContent=L[ix];b.onclick=function(){if(s.done)return;seq.splice(seq.indexOf(ix),1);draw()};sl.appendChild(b)});
+    L.forEach(function(ch,ix){var b=document.createElement("button");b.type="button";b.className="tile";b.textContent=ch;b.disabled=s.done||seq.indexOf(ix)>-1;b.onclick=function(){seq.push(ix);draw()};ti.appendChild(b)});
+  }
+  draw();
+  var sp=box.querySelector('[data-s="1"]');
+  sp.onclick=function(){say(w)};
+  box.querySelector('[data-s="2"]').onclick=function(){if(s.done)return;seq=[];draw()};
+  box.querySelector('[data-s="3"]').onclick=function(){
+    if(finished||s.done)return;
+    var g=seq.map(function(ix){return L[ix]}).join("");
+    if(g===w){
+      s.done=true;s.pts=s.np+(tries===0?1:0);
+      mm.className="msg ok";mm.textContent="拼對了！"+w+"。本關共 "+s.pts+" 分。";
+      c.classList.add("done");c.querySelector("h3").textContent+=" ✅";
+      box.querySelectorAll('[data-s="2"],[data-s="3"]').forEach(function(x){x.disabled=true});
+      draw();prog();
+      var fu=FUN[it.id];
+      if(fu){var f=document.createElement("div");f.className="fun";
+        var e1=document.createElement("div");e1.className="en";e1.textContent="✨ "+fu[0];
+        var z1=document.createElement("div");z1.className="zh";z1.textContent=fu[1];
+        f.appendChild(e1);f.appendChild(z1);
+        if(window.speechSynthesis){var fb=document.createElement("button");fb.type="button";fb.className="btn ghost";fb.textContent="🔊 再聽一次";fb.onclick=function(){say(fu[0])};f.appendChild(fb);say(fu[0])}
+        box.appendChild(f)}
+    }else{tries++;mm.className="msg bad";mm.textContent=g.length<w.length?"字母還沒排完。":"拼法不對，再聽一次發音，點上方字母可以拿掉。"}
+  };
+  if(!window.speechSynthesis){sp.hidden=true;box.querySelector(".wt").textContent+="（這台裝置不支援發音）"}else{say(w)}
+}
+function pts(){var p=0;run.forEach(function(_,i){if(st[i]&&st[i].done)p+=st[i].pts});return p+finalPts}
+function prog(){
+  var n=0;run.forEach(function(_,i){if(st[i].done)n++});
+  $("lamps").innerHTML=run.map(function(_,i){return '<span class="lamp'+(st[i].done?' on':'')+'">🎃</span>'}).join("");
+  $("score").textContent="已完成 "+n+" / 5 關，目前 "+pts()+" 分";
+  if(n===5&&!$("doorMsg").textContent)msg("doorMsg","ok","五關都完成了！把五個數字答案加起來試試看。");
+}
+function msg(id,c,t){var e=$(id);e.className="msg"+(c?" "+c:"");e.textContent=t}
+function spellUI(w,full,onOk){
+  var L=shuf(w),seq=[],tries=0,done=false;
+  var box=document.createElement("div");box.className="word";
+  box.innerHTML='<div class="row"><button class="btn ghost" type="button" data-s="1">🔊 聽發音</button></div><div class="slots" aria-label="你的拼字"></div><div class="tiles" aria-label="字母"></div><div class="row"><button class="btn ghost" type="button" data-s="2">清除重排</button><button class="btn" type="button" data-s="3">檢查拼字</button></div><div class="msg" role="status"></div>';
+  var sl=box.querySelector(".slots"),ti=box.querySelector(".tiles"),mm=box.querySelector(".msg"),sp=box.querySelector('[data-s="1"]');
+  function draw(){
+    sl.textContent="";ti.textContent="";
+    seq.forEach(function(ix){var b=document.createElement("button");b.type="button";b.className="tile on";b.textContent=L[ix];b.onclick=function(){if(done)return;seq.splice(seq.indexOf(ix),1);draw()};sl.appendChild(b)});
+    L.forEach(function(ch,ix){var b=document.createElement("button");b.type="button";b.className="tile";b.textContent=ch;b.disabled=done||seq.indexOf(ix)>-1;b.onclick=function(){seq.push(ix);draw()};ti.appendChild(b)});
+  }
+  draw();
+  sp.onclick=function(){say(full)};
+  if(!window.speechSynthesis)sp.hidden=true;
+  box.querySelector('[data-s="2"]').onclick=function(){if(done)return;seq=[];draw()};
+  box.querySelector('[data-s="3"]').onclick=function(){
+    if(done)return;
+    var g=seq.map(function(ix){return L[ix]}).join("");
+    if(g===w){done=true;mm.className="msg ok";mm.textContent="拼對了！"+w;box.querySelectorAll('[data-s="2"],[data-s="3"]').forEach(function(x){x.disabled=true});draw();onOk(tries===0)}
+    else{tries++;mm.className="msg bad";mm.textContent=g.length<w.length?"字母還沒排完。":"拼法不對，再聽一次發音，點上方字母可以拿掉。"}
+  };
+  return box;
+}
+function finalSpell(w){
+  var host=$("finalSpell"),parts=w.split("-"),left=parts.length,first=true;
+  host.textContent="";
+  var tip=document.createElement("p");tip.className="tag";tip.textContent=parts.length>1?"這個數字是兩個單字（中間有連字號），請依序拼出：先拼十位，再拼個位。":"請拼出這個數字的英文單字。";host.appendChild(tip);
+  parts.forEach(function(pt){
+    host.appendChild(spellUI(pt,w,function(ft){
+      if(!ft)first=false;
+      left--;
+      if(left===0){
+        finalPts=first?1:0;finished=true;clearInterval(tick);
+        $("doorIcon").textContent="🎉";$("doorText").textContent="大門打開了，你們逃出鬼屋！";
+        msg("doorMsg","ok","總分 "+pts()+" 分，用時 "+fmt(secs)+"。請登錄成績。");
+        $("submit").hidden=false;$("submit").scrollIntoView({behavior:"smooth",block:"center"});
+      }
+    }));
+  });
+  if(window.speechSynthesis)say(w);
+}
+$("open").onclick=function(){
+  if(!run||finished)return;
+  if(!run.every(function(_,i){return st[i]&&st[i].done})){msg("doorMsg","bad","還有關卡沒完成，每一關都要答對數字並拼對單字。");return}
+  var v=$("code").value;
+  if(v===""){msg("doorMsg","bad","請輸入密碼。");return}
+  if(+v===code){
+    if(codeOk)return;codeOk=true;
+    $("code").disabled=true;$("open").disabled=true;
+    $("doorIcon").textContent="🔐";$("doorText").textContent="密碼正確！最後一步：聽發音，拼出總和 "+code+" 的英文單字。";
+    msg("doorMsg","ok","總和是 "+code+"。");
+    finalSpell(nw(code));
+  }else{msg("doorMsg","bad","大門沒有動靜。確認五關的數字答案後，再把它們相加。")}
+};
+$("code").onkeydown=function(e){if(e.key==="Enter")$("open").click()};
+function fillSel(id,arr,ph){var s=$(id);s.innerHTML='<option value="">'+ph+'</option>'+arr.map(function(x){return '<option value="'+x[0]+'">'+x[1]+'</option>'}).join("")}
+fillSel("cls",Array.from({length:17},function(_,i){return [401+i,(401+i)+" 班"]}),"選擇班級");
+fillSel("seat",Array.from({length:30},function(_,i){return [i+1,(i+1)+" 號"]}),"選擇座號");
+fillSel("emo",EMO.map(function(e){return [e.split(" ")[0],e]}),"選擇萬聖節圖案");
+function better(a,b){return a.pts!==b.pts?a.pts>b.pts:a.secs<b.secs}
+$("send").onclick=function(){
+  var c=$("cls").value,se=$("seat").value,e=$("emo").value,m=$("subMsg");
+  if(!c||!se||!e){m.className="msg bad";m.textContent="請選擇班級、座號和圖案。";return}
+  var rec={tier:"g4",cls:+c,seat:+se,emo:e,pts:pts(),secs:secs,at:Date.now()};
+  var key="g4_c"+rec.cls+"_s"+rec.seat;
+  var old=board.filter(function(r){return r.key===key})[0];
+  if(old&&!better(rec,old)){m.className="msg ok";m.textContent="已登錄。這次成績沒有超過你之前的紀錄，所以保留舊紀錄。";$("send").disabled=true;return}
+  $("send").disabled=true;
+  var done=function(where){m.className="msg ok";m.textContent="登錄成功！"+where;rec.key=key;mergeLocal(rec);drawBoard()};
+  if(useDb&&dbRef){
+    dbRef.collection("board").doc(key).set(rec).then(function(){done("已加入全班排行榜。")}).catch(function(){rec.key=key;saveLocal(rec);done("無法連上共用排行榜，已先存在這台裝置。")});
+  }else{rec.key=key;saveLocal(rec);done("成績存在這台裝置的排行榜。")}
+};
+function loadLocal(){try{return JSON.parse(localStorage.getItem("hmboard")||"[]")}catch(e){return[]}}
+function saveLocal(r){try{var a=loadLocal().filter(function(x){return x.key!==r.key});a.push(r);localStorage.setItem("hmboard",JSON.stringify(a))}catch(e){}}
+function mergeLocal(r){if(useDb)return;board=board.filter(function(x){return x.key!==r.key});board.push(r)}
+function drawBoard(){
+  var box=$("rows");box.textContent="";
+  $("boardTitle").textContent="排行榜｜四年級";
+  var rs=board.filter(function(r){return r.tier==="g4"}).sort(function(a,b){return a.pts!==b.pts?b.pts-a.pts:a.secs-b.secs}).slice(0,10);
+  if(!rs.length){var p=document.createElement("p");p.className="tag";p.textContent="還沒有人登錄，第一名等你來拿。";box.appendChild(p);return}
+  rs.forEach(function(r,i){
+    var d=document.createElement("div");d.className="lb";
+    var a=document.createElement("span");a.className="rk";a.textContent=["🥇","🥈","🥉"][i]||String(i+1);
+    var b=document.createElement("span");b.className="nm";b.textContent=String(r.emo||"").slice(0,4)+" "+Number(r.cls)+" 班 "+Number(r.seat)+" 號";
+    var c=document.createElement("span");c.className="sc";c.textContent=Number(r.pts)+" 分　"+fmt(Number(r.secs)||0);
+    d.appendChild(a);d.appendChild(b);d.appendChild(c);box.appendChild(d);
+  });
+}
+$("reset").onclick=reset;
+$("theme").onclick=function(){
+  var r=document.documentElement,d=r.dataset.theme;
+  var sysDark=window.matchMedia("(prefers-color-scheme: dark)").matches;
+  r.dataset.theme=(d?d==="dark":sysDark)?"light":"dark";
+};
+board=loadLocal();
+if(window.claude&&claude.use){
+  claude.use("db").then(function(db){
+    if(!db)return;
+    dbRef=db;
+    db.collection("board").onSnapshot(function(snap){
+      useDb=true;board=snap.docs.map(function(d){var x=d.data()||{};x.key=d.id;return x});drawBoard();
+    },function(){useDb=false});
+  }).catch(function(){});
+}
+reset();
+</script>
+</body>
+</html>
