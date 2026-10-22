@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>萬聖節數學闖關</title>
+<title>萬聖節數字大進擊</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -93,8 +93,8 @@ select{font:inherit;padding:9px 10px;border-radius:10px;border:2px solid var(--l
 <body>
 <main>
 <div class="tools"><button class="btn ghost" id="theme" type="button">切換明暗</button><button class="btn ghost" id="reset" type="button">重新開始</button></div>
-<h1>逃出鬼屋</h1>
-<p class="lede">萬聖節數學闖關｜四年級・時間單元</p>
+<h1>🎃 萬聖節數字大進擊 👻</h1>
+<p class="lede">算數字、聽英文、拼單字，一起逃出鬼屋！</p>
 <div class="story"><p style="margin:0">巫婆把大家關進了鬼屋。每次闖關的題目都是隨機抽出的。每一關先算出魔法數字，再拼出它的英文單字，最後把五個數字加起來，就是大門的密碼，輸入後還要拼出它的英文單字。</p></div>
 
 <div class="bar">
@@ -117,12 +117,13 @@ select{font:inherit;padding:9px 10px;border-radius:10px;border:2px solid var(--l
   <div id="finalSpell"></div>
 </section>
 <section class="card" id="submit" hidden style="margin-top:20px">
-  <h3>登錄成績</h3>
-  <p class="tag">選好班級、座號和一個萬聖節圖案，成績就會出現在排行榜。</p>
-  <div class="row"><select id="cls" aria-label="班級"></select><select id="seat" aria-label="座號"></select><select id="emo" aria-label="萬聖節圖案"></select><button class="btn" id="send" type="button">送出成績</button></div>
+  <h3>送出成績</h3>
+  <p class="tag">選好班級、座號和一個萬聖節圖案，下方就會出現「送出成績」按鈕。</p>
+  <div class="row"><select id="cls" aria-label="班級"></select><select id="seat" aria-label="座號"></select><select id="emo" aria-label="萬聖節圖案"></select></div>
   <div class="msg" id="subMsg" role="status"></div>
+  <div id="formLink"></div>
 </section>
-<section style="margin-top:32px"><h2 id="boardTitle">排行榜</h2><p class="tag">先比分數，分數相同比用時，只列出前 10 名。</p><div id="rows"></div></section>
+<section style="margin-top:32px"><h2 id="boardTitle">排行榜</h2><p class="tag">先比分數，分數相同比用時，只列出前 20 名。</p><p class="tag" id="boardStat"></p><div id="rows"></div></section>
 </main>
 <script>
 var POOL=[
@@ -144,7 +145,7 @@ var BON=[
 {id:"X2",t:"最終關：幽靈與蜘蛛",h:"先算幽靈，再算蜘蛛。",a:7,b:"每個圖案代表幾分鐘？<pre>👻 × 5 = 15\n👻 + 🕷️ = 13\n🕷️ ÷ 2 + 👻 − 1 = ？</pre>"},
 {id:"X3",t:"最終關：糖果與巫師",h:"先算糖果，再算巫師。",a:8,b:"每個圖案代表幾分鐘？<pre>🍬 ÷ 2 = 6\n🍬 − 🧙 = 7\n🍬 ÷ 4 + 🧙 = ？</pre>"}];
 var WORDS={1:"one",2:"two",3:"three",4:"four",5:"five",6:"six",7:"seven",8:"eight",9:"nine",10:"ten",11:"eleven",12:"twelve",13:"thirteen",14:"fourteen",15:"fifteen",16:"sixteen"};
-var EMO=["🎃 南瓜","👻 幽靈","🦇 蝙蝠","🕷️ 蜘蛛","🧙 巫師","🧛 吸血鬼","🧟 殭屍","🐱 黑貓","💀 骷髏","🕸️ 蜘蛛網","🍬 糖果","🌙 月亮"];
+var EMO=[["\u{1F47B}","幽靈"],["\u{1F480}","骷髏"],["\u{1F383}","南瓜"],["\u{1F9DF}","殭屍"],["\u{1F9DF}\u200D\u2640\uFE0F","女殭屍"],["\u{1F987}","蝙蝠"],["\u{1F577}\uFE0F","蜘蛛"],["\u{1F578}\uFE0F","蜘蛛網"],["\u{1F408}\u200D\u2B1B","黑貓"],["\u{1F36D}","棒棒糖"],["\u{1F36C}","糖果"],["\u{1F36B}","巧克力"],["\u{1F3DA}\uFE0F","鬼屋"],["\u{26B0}\uFE0F","棺材"],["\u{1FAA6}","墓碑"],["\u{1F9DB}","吸血鬼"],["\u{1F9DB}\u200D\u2640\uFE0F","女吸血鬼"],["\u{1F9D9}\u200D\u2640\uFE0F","女巫"],["\u{1F315}","滿月"]];
 var run=null,bonus=null,code=0,codeOk=false,finalPts=0,st={},t0=0,tick=null,secs=0,finished=false,board=[],dbRef=null,useDb=false;
 var $=function(i){return document.getElementById(i)};
 function fmt(s){return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
@@ -161,8 +162,8 @@ function newRun(){
   return items;
 }
 function reset(){
-  run=null;st={};codeOk=false;finalPts=0;$("code").disabled=false;$("open").disabled=false;$("finalSpell").textContent="";finished=false;clearInterval(tick);secs=0;
-  $("stations").innerHTML="";$("door").hidden=true;$("submit").hidden=true;$("start").hidden=false;$("send").disabled=false;msg("subMsg","","");
+  run=null;st={};codeOk=false;finalPts=0;$("code").disabled=false;$("open").disabled=false;$("finalSpell").textContent="";$("formLink").textContent="";finished=false;clearInterval(tick);secs=0;
+  $("stations").innerHTML="";$("door").hidden=true;$("submit").hidden=true;$("start").hidden=false;msg("subMsg","","");
   $("timer").textContent="⏱️ 00:00";$("lamps").innerHTML="";$("score").textContent="準備好就按「開始闖關」，計時馬上開始。";
   $("code").value="";msg("doorMsg","","");$("doorIcon").textContent="🚪";$("doorText").textContent="把五關的數字答案相加，輸入密碼，最後還要拼出總和的英文單字。";
   drawBoard();
@@ -345,8 +346,8 @@ function finalSpell(w){
       if(left===0){
         finalPts=first?1:0;finished=true;clearInterval(tick);
         $("doorIcon").textContent="🎉";$("doorText").textContent="大門打開了，你們逃出鬼屋！";
-        msg("doorMsg","ok","總分 "+pts()+" 分，用時 "+fmt(secs)+"。請登錄成績。");
-        $("submit").hidden=false;$("submit").scrollIntoView({behavior:"smooth",block:"center"});
+        msg("doorMsg","ok","總分 "+pts()+" 分，用時 "+fmt(secs)+"。請往下選擇班級、座號和圖案，再按「送出成績」。");
+        $("submit").hidden=false;$("submit").scrollIntoView({behavior:"smooth",block:"start"});
       }
     }));
   });
@@ -369,33 +370,48 @@ $("code").onkeydown=function(e){if(e.key==="Enter")$("open").click()};
 function fillSel(id,arr,ph){var s=$(id);s.innerHTML='<option value="">'+ph+'</option>'+arr.map(function(x){return '<option value="'+x[0]+'">'+x[1]+'</option>'}).join("")}
 fillSel("cls",Array.from({length:17},function(_,i){return [401+i,(401+i)+" 班"]}),"選擇班級");
 fillSel("seat",Array.from({length:30},function(_,i){return [i+1,(i+1)+" 號"]}),"選擇座號");
-fillSel("emo",EMO.map(function(e){return [e.split(" ")[0],e]}),"選擇萬聖節圖案");
+fillSel("emo",EMO.map(function(e){return [e[0],e[0]+" "+e[1]]}),"選擇萬聖節圖案");
+var FORM="https://docs.google.com/forms/d/e/1FAIpQLScqaBNBLepdzEMGU3OE70DjS-0IS6QoP7gWNZwaYVywUOYiOA/viewform?usp=pp_url";
+function sCode(c,se){var sc=pts(),t=Math.min(secs,9999),ck=(sc*131+t*17+(+c)*7+(+se)*3+577)%1000;return "H"+String(sc).padStart(2,"0")+String(t).padStart(4,"0")+String(ck).padStart(3,"0")}
+function formUrl(c,se,e){return FORM+"&entry.1789091054="+encodeURIComponent(c)+"&entry.427762394="+encodeURIComponent(String(se).padStart(2,"0"))+"&entry.1483922440="+encodeURIComponent(e)+"&entry.383632446="+encodeURIComponent(sCode(c,se))}
+function showForm(c,se,e){
+  var h=$("formLink");h.textContent="";var u=formUrl(c,se,e);
+  var p=document.createElement("p");p.className="tag";p.textContent="按下「送出成績」會打開已填好的 Google 表單，請再按一次「Submit（提交）」，成績才算送出。";
+  var a=document.createElement("a");a.className="btn";a.href=u;a.target="_blank";a.rel="noopener";a.textContent="📝 送出成績";a.onclick=function(){saveRec(c,se,e)};a.style.display="inline-block";a.style.textDecoration="none";
+  var cp=document.createElement("button");cp.type="button";cp.className="btn ghost";cp.textContent="複製連結";
+  cp.onclick=function(){try{navigator.clipboard.writeText(u).then(function(){cp.textContent="已複製"},function(){cp.textContent="無法複製"})}catch(_){cp.textContent="無法複製"}};
+  var r=document.createElement("div");r.className="row";r.appendChild(a);r.appendChild(cp);h.appendChild(p);h.appendChild(r);
+}
 function better(a,b){return a.pts!==b.pts?a.pts>b.pts:a.secs<b.secs}
-$("send").onclick=function(){
-  var c=$("cls").value,se=$("seat").value,e=$("emo").value,m=$("subMsg");
-  if(!c||!se||!e){m.className="msg bad";m.textContent="請選擇班級、座號和圖案。";return}
+function saveRec(c,se,e){
   var rec={tier:"g4",cls:+c,seat:+se,emo:e,pts:pts(),secs:secs,at:Date.now()};
   var key="g4_c"+rec.cls+"_s"+rec.seat;
   var old=board.filter(function(r){return r.key===key})[0];
-  if(old&&!better(rec,old)){m.className="msg ok";m.textContent="已登錄。這次成績沒有超過你之前的紀錄，所以保留舊紀錄。";$("send").disabled=true;return}
-  $("send").disabled=true;
-  var done=function(where){m.className="msg ok";m.textContent="登錄成功！"+where;rec.key=key;mergeLocal(rec);drawBoard()};
-  if(useDb&&dbRef){
-    dbRef.collection("board").doc(key).set(rec).then(function(){done("已加入全班排行榜。")}).catch(function(){rec.key=key;saveLocal(rec);done("無法連上共用排行榜，已先存在這台裝置。")});
-  }else{rec.key=key;saveLocal(rec);done("成績存在這台裝置的排行榜。")}
-};
+  if(old&&!better(rec,old))return;
+  rec.key=key;
+  var done=function(){mergeLocal(rec);drawBoard()};
+  if(useDb&&dbRef){dbRef.collection("board").doc(key).set(rec).then(done).catch(function(){saveLocal(rec);done()})}
+  else{saveLocal(rec);done()}
+}
+function refreshForm(){
+  var c=$("cls").value,se=$("seat").value,e=$("emo").value;
+  if(!c||!se||!e){$("formLink").textContent="";msg("subMsg","","請先選擇班級、座號和圖案，「送出成績」按鈕就會出現。");return}
+  msg("subMsg","","");showForm(c,se,e);
+}
+["cls","seat","emo"].forEach(function(i){$(i).onchange=refreshForm});
 function loadLocal(){try{return JSON.parse(localStorage.getItem("hmboard")||"[]")}catch(e){return[]}}
 function saveLocal(r){try{var a=loadLocal().filter(function(x){return x.key!==r.key});a.push(r);localStorage.setItem("hmboard",JSON.stringify(a))}catch(e){}}
 function mergeLocal(r){if(useDb)return;board=board.filter(function(x){return x.key!==r.key});board.push(r)}
 function drawBoard(){
   var box=$("rows");box.textContent="";
+  $("boardStat").textContent=useDb?"🌐 共用排行榜：不同裝置的成績會自動合併。":"📱 目前只顯示這台裝置的成績。要跨裝置共用，學生需要登入並有編輯權限。";
   $("boardTitle").textContent="排行榜｜四年級";
-  var rs=board.filter(function(r){return r.tier==="g4"}).sort(function(a,b){return a.pts!==b.pts?b.pts-a.pts:a.secs-b.secs}).slice(0,10);
+  var rs=board.filter(function(r){return r.tier==="g4"}).sort(function(a,b){return a.pts!==b.pts?b.pts-a.pts:a.secs-b.secs}).slice(0,20);
   if(!rs.length){var p=document.createElement("p");p.className="tag";p.textContent="還沒有人登錄，第一名等你來拿。";box.appendChild(p);return}
   rs.forEach(function(r,i){
     var d=document.createElement("div");d.className="lb";
     var a=document.createElement("span");a.className="rk";a.textContent=["🥇","🥈","🥉"][i]||String(i+1);
-    var b=document.createElement("span");b.className="nm";b.textContent=String(r.emo||"").slice(0,4)+" "+Number(r.cls)+" 班 "+Number(r.seat)+" 號";
+    var b=document.createElement("span");b.className="nm";b.textContent=String(r.emo||"").slice(0,12)+" "+Number(r.cls)+" 班 "+Number(r.seat)+" 號";
     var c=document.createElement("span");c.className="sc";c.textContent=Number(r.pts)+" 分　"+fmt(Number(r.secs)||0);
     d.appendChild(a);d.appendChild(b);d.appendChild(c);box.appendChild(d);
   });
@@ -413,7 +429,7 @@ if(window.claude&&claude.use){
     dbRef=db;
     db.collection("board").onSnapshot(function(snap){
       useDb=true;board=snap.docs.map(function(d){var x=d.data()||{};x.key=d.id;return x});drawBoard();
-    },function(){useDb=false});
+    },function(){useDb=false;drawBoard()});
   }).catch(function(){});
 }
 reset();
